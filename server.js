@@ -5,8 +5,10 @@ var http = require('http');
 var https = require('https');
 var app = express();
 
-var HTTP_PORT = 3000,
+
+var HTTP_PORT = process.env.OPENSHIFT_NODEJS_PORT || 8080,
     HTTPS_PORT = 4443,
+    IP_ADDRESS = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1",
     SSL_OPTS = {
       key: fs.readFileSync(path.resolve(__dirname,'.ssl/www.example.com.key')),
 	  cert: fs.readFileSync(path.resolve(__dirname,'.ssl/www.example.com.cert'))
@@ -148,11 +150,11 @@ var pidFile = path.resolve(__dirname, './pid.txt');
 fs.writeFileSync(pidFile, process.pid, 'utf-8'); 
 
 // Create an HTTP service.
-http.createServer(app).listen(HTTP_PORT,function() {
+http.createServer(app).listen(HTTP_PORT, IP_ADDRESS, function() {
   console.log('Listening to HTTP on port ' + HTTP_PORT);
 });
 
 // Create an HTTPS service identical to the HTTP service.
-https.createServer(SSL_OPTS, app).listen(HTTPS_PORT,function() {
-  console.log('Listening to HTTPS on port ' + HTTPS_PORT);
-});
+//https.createServer(SSL_OPTS, app).listen(HTTPS_PORT,function() {
+//  console.log('Listening to HTTPS on port ' + HTTPS_PORT);
+//});
